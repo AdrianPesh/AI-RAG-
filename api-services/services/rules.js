@@ -25,8 +25,22 @@ const userExists = async(userId)=>{
     }
     return true;
 }
+const conversationExists = async(conversationId,userId,workspaceId)=>{
+    const conversation = await prisma.conversation.findFirst({
+        where:{
+            id:Number(conversationId),
+            user_id:Number(userId),
+            workspace_id:Number(workspaceId)
+        }
+    });
+    if(!conversation){
+        return false;
+    }
+    return true;
+}
 
 module.exports = {
     checkIfUserIsPartOfTheWorkspace,
-    userExists
+    userExists,
+    conversationExists
 };

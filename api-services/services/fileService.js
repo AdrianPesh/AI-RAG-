@@ -1,8 +1,10 @@
 const prisma = require("../config/prisma");
 const {checkIfUserIsPartOfTheWorkspace}=require("./rules");
-const PdfQueue = require("../cache/Queue");
+
 const pdfQueue = require("../cache/Queue");
 const uploadFile = async(userId,file,workspaceId,objectName)=>{
+    
+    
     const member=await checkIfUserIsPartOfTheWorkspace(userId,workspaceId);
     if(!member){
         throw new Error("User isn't part of the targeted workspace");

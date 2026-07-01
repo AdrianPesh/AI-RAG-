@@ -3,7 +3,9 @@ const processPdf = require("../services/processPdf");
 require("dotenv").config();
 
 const pdfWorker = new Worker("pdf",async(job)=>{
+    await job.updateProgress(10);
     await processPdf.processPdf(job.data.pdfId);
+    await job.updateProgress(100);
 },
 {
     connection:{
@@ -13,19 +15,6 @@ const pdfWorker = new Worker("pdf",async(job)=>{
 }
 );
 
-pdfWorker.on("completed",(job)=>{
-    console.log(`Job ${job.id} completed`);
-});
-
-pdfWorker.on("failed",(job,error)=>{
-    console.log(`Job ${job.id} failed:
-        ${error.message}
-        `);
-});
-
-pdfWorker.on("error",error=>{
-    console.log(error.message);
-});
 
 module.exports = pdfWorker;
 

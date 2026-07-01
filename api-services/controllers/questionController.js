@@ -15,7 +15,28 @@ const askQuestion = async(req,res)=>{
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
 
-       await questionService.question({userId:req.user.id,...req.body,conversationId:conversationId,res:res});
+       await questionService.question({userId:req.user.id,...req.body,conversationId:conversationId,
+        onSources(chunks){
+            res.write(`event: sources\n`);
+            res.write(`data: ${JSON.stringify(chunks)}\n\n`);
+        },
+        onNoContext(){
+            res.write(`event: no-context\n`);
+            res.write(`data: i couldn't find information about this\n\n`);
+            res.end();
+        },
+        onChunk(text){
+            res.write(`event: chunk\n`);
+            res.write(`data: ${text}\n\n`);
+        },
+        onError(error){
+            res.write(`event: error\n`);
+            res.write(`data: ${error}\n\n`);
+            res.end();
+        }
+
+       });
+       res.end();
 
       
 
