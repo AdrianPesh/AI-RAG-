@@ -15,6 +15,7 @@ model User {
   documents     Document[]
   workspaces    Workspace[]
   members       WorkspaceMember[]
+  conversations Conversation[]
 }
 
 model Workspace {
@@ -25,7 +26,7 @@ model Workspace {
   documents  Document[]
   user       User              @relation(fields: [created_by], references: [id])
   members    WorkspaceMember[]
-
+  conversations Conversation[]
   @@unique([name, created_by])
 }
 
@@ -76,4 +77,32 @@ model DocumentChunk {
   created_at   DateTime @default(now())
 
   @@index([document_id])
+}
+
+model Conversation{
+  id Int @id @default(autoincrement())
+  workspace_id Int
+  user_id Int
+  title String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields:[user_id],references:[id])
+  workspace Workspace @relation(fields:[workspace_id],references:[id])
+
+  messages Message[]
+}
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+
+model Message {
+  id Int @id @default(autoincrement())
+  conversation_id Int
+  conversation Conversation @relation(fields:[conversation_id],references:[id])
+  role MessageRole
+  content String
+  created_at DateTime @default(now())
 }

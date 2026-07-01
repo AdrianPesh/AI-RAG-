@@ -1,8 +1,8 @@
 const express = require("express");
-const questionController = require("../controllers/questionController");
+const conversationController = require("../controllers/conversationController");
 const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router();
 
-router.post("/ask/:id",authMiddleware,questionController.askQuestion);
+router.post("/",authMiddleware,conversationController.addConversation);
 
 module.exports = router;

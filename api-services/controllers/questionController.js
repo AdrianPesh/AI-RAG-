@@ -6,19 +6,24 @@ const askQuestion = async(req,res)=>{
             throw new Error("Unathorized");
         }
 
-        if(!req.body || !req.body.workspaceId || !req.body.question){
+        if(!req.body || !req.body.workspaceId || !req.body.question || !req.params || !req.params.id){
             throw new Error("Required fields missing");
         }
+        const conversationId = req.params.id;
 
-        const answer = await questionService.question({userId:req.user.id,...req.body});
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
 
-        return res.status(200).json({
-            success:true,
-            message:"Answer was received",
-            answer:answer
-        });
+       await questionService.question({userId:req.user.id,...req.body,conversationId:conversationId,res:res});
+
+      
 
     }catch(error){
+        if(res.headersSent){
+            res.end()
+            return;
+        }
         return res.status(400).json({
             success:false,
             message:error.message

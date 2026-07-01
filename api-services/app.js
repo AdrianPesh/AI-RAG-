@@ -5,6 +5,7 @@ const workspaceMemberRoute = require("./routes/workspaceMemberRoute");
 const workspaceRoute=require("./routes/workspaceRoute");
 const fileRoute = require("./routes/fileRoute");
 const questionRoute = require("./routes/questionRoute");
+const conversationRoute = require("./routes/conversationRoute");
 const startApp = ()=>{
     const app = express();
     app.use(express.json());
@@ -14,6 +15,7 @@ const startApp = ()=>{
     app.use("/workspace",workspaceRoute);
     app.use("/file",fileRoute);
     app.use("/question",questionRoute);
+    app.use("/conversation",conversationRoute);
     return app;
 }
 
